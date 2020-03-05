@@ -23,7 +23,8 @@ class ConferenceController extends AbstractController
             $greet = sprintf('<h1>Hello %s!</h1>', htmlspecialchars($name));
         }
 
-        return new Response(<<<EOF
+        return new Response(
+            <<<EOF
 <html>
 <body>
 $greet
@@ -31,6 +32,32 @@ $greet
 </body>
 </html>
 EOF
-);
+        );
+    }
+
+    /**
+     * @Route("/hello/{name}", name="hello")
+     * @param  string  $name
+     *
+     * @return Response
+     */
+    public function hello(string $name = ''): Response
+    {
+        $greet = '';
+
+        if ($name) {
+            $greet = sprintf('<h1>Hello %s!</h1>', htmlspecialchars($name));
+        }
+
+        return new Response(
+            <<<EOF
+<html>
+<body>
+$greet
+<img src="/images/under-construction.gif" />
+</body>
+</html>
+EOF
+        );
     }
 }
