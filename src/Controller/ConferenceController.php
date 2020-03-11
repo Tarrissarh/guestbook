@@ -82,6 +82,7 @@ class ConferenceController extends AbstractController
                     $photo->move($photoDir, $filename);
                 } catch (FileException $e) {
                     // unable to upload the photo, give up
+                    print_r($e->getMessage());exit;
                 }
 
                 $comment->setPhotoFilename($filename);
