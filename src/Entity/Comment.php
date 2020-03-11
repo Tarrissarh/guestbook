@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CommentRepository")
@@ -19,16 +20,20 @@ class Comment
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     private $author;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank
      */
     private $text;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Email
      */
     private $email;
 
@@ -42,6 +47,11 @@ class Comment
      * @ORM\JoinColumn(nullable=false)
      */
     private $conference;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $photoFilename;
 
     public function __toString(): string
     {
@@ -117,6 +127,18 @@ class Comment
     public function setConference(?Conference $conference): self
     {
         $this->conference = $conference;
+
+        return $this;
+    }
+
+    public function getPhotoFilename(): ?string
+    {
+        return $this->photoFilename;
+    }
+
+    public function setPhotoFilename(?string $photoFilename): self
+    {
+        $this->photoFilename = $photoFilename;
 
         return $this;
     }

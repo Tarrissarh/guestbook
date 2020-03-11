@@ -24,4 +24,5 @@ easy_admin:
                     - { property: 'createdAt', type: 'datetime', type_options: { attr: { readonly: true } } }
                     - 'author'
                     - { property: 'email', type: 'email' }
+                    - { property: 'photoFilename', type: 'image', 'base_path': "%app.path.photos%", label: 'Photo' }
                     - 'text'
