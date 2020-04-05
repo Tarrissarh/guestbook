@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,6 +11,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ConferenceRepository;
 use App\Entity\Conference;
 use App\Repository\CommentRepository;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -60,13 +65,18 @@ class ConferenceController extends AbstractController
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws Exception
      */
     public function show(
         Request $request,
         Conference $conference,
         CommentRepository $commentRepository,
         ConferenceRepository $conferenceRepository,
-        SpamChecker     $spamChecker,
+        SpamChecker $spamChecker,
         string $photoDir
     ) {
         $comment = new Comment();
@@ -84,7 +94,8 @@ class ConferenceController extends AbstractController
                     $photo->move($photoDir, $filename);
                 } catch (FileException $e) {
                     // unable to upload the photo, give up
-                    print_r($e->getMessage());exit;
+                    print_r($e->getMessage());
+                    exit;
                 }
 
                 $comment->setPhotoFilename($filename);
@@ -93,10 +104,10 @@ class ConferenceController extends AbstractController
             $this->entityManager->persist($comment);
 
             $context = [
-                'user_ip' => $request->getClientIp(),
+                'user_ip'    => $request->getClientIp(),
                 'user_agent' => $request->headers->get('user-agent'),
-                'referrer' => $request->headers->get('referer'),
-                'permalink' => $request->getUri(),
+                'referrer'   => $request->headers->get('referer'),
+                'permalink'  => $request->getUri(),
             ];
 
             if ($spamChecker::COMMENT_SPAM === $spamChecker->getSpamScore($comment, $context)) {

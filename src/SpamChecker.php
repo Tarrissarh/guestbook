@@ -52,7 +52,7 @@ class SpamChecker
                 'body' => array_merge(
                     $context,
                     [
-                        'blog'                 => 'https://guestbook.example.com',
+                        'blog'                 => 'http://guestbook.local',
                         'comment_type'         => 'comment',
                         'comment_author'       => $comment->getAuthor(),
                         'comment_author_email' => $comment->getEmail(),
